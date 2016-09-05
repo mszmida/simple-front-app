@@ -1,11 +1,13 @@
 "use strict";
 
-const koa = require("koa"),
+const fs = require("fs"),
+    koa = require("koa"),
     path = require("path"),
     logger = require("koa-logger"),
     staticServe = require("koa-static"),
     route = require("koa-route"),
-    send = require("koa-send");
+    send = require("koa-send"),
+    debug = require("debug")("server");
 
 
 const app = koa(),
@@ -22,12 +24,20 @@ app.use(function *(next){
     var start = new Date;
     yield next;
     var ms = new Date - start;
-    console.log('%s %s - %s', this.method, this.url, ms);
+    debug('%s %s - %s', this.method, this.url, ms);
+});
+
+// check dist folder
+fs.access(distFolder, fs.constants.R_OK | fs.constants.W_OK, (err) => {
+    if (err) {
+        debug(`Folder '${distPath}' does not exist! Use 'gulp assembly' command.`);
+        process.exit(0);
+    }
 });
 
 // application error handler
 app.on('error', function(err, ctx){
-    console.log('server error', err, ctx);
+    debug('server error', err, ctx);
 });
 
 // serving static files
@@ -41,5 +51,5 @@ app.use(route.get("/", function *() {
 }));
 
 app.listen(port, function () {
-    console.log(`Server listening on port ${port}`);
+    debug(`Server listening on port ${port}`);
 });
