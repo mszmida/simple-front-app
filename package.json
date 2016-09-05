@@ -1,0 +1,17 @@
+{
+  "name": "simple-front-app",
+  "author": "Maciej Szmida",
+  "version": "1.0.0",
+  "description": "Simple frontend project built from scratch",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {
+    "koa": "^1.2.2",
+    "koa-route": "^2.4.2",
+    "koa-send": "^3.2.0"
+  },
+  "scripts": {
+    "start": "node server/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
