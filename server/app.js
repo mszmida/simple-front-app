@@ -2,6 +2,7 @@
 
 const fs = require("fs"),
     koa = require("koa"),
+    minimist = require("minimist"),
     path = require("path"),
     logger = require("koa-logger"),
     staticServe = require("koa-static"),
@@ -11,8 +12,9 @@ const fs = require("fs"),
 
 
 const app = koa(),
-    port = 3000,
-    distFolder = "dist",
+    argv = minimist(process.argv.slice(2)),
+    port = argv.port || 3000,
+    distFolder = "dist/",
     distPath = path.join(__dirname, "../", distFolder);
 
 
@@ -30,7 +32,8 @@ app.use(function *(next){
 // check dist folder
 fs.access(distFolder, fs.constants.R_OK | fs.constants.W_OK, (err) => {
     if (err) {
-        debug(`Folder '${distPath}' does not exist! Use 'gulp assembly' command.`);
+        debug(err);
+        debug("Use 'gulp assembly' command.");
         process.exit(0);
     }
 });
