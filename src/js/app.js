@@ -5,7 +5,8 @@ const Backbone = require("backbone"),
     RootView = require("layout/views/root.view.js"),
     HeaderView = require("layout/views/header.view.js"),
     FooterView = require("layout/views/footer.view.js"),
-    UsersTableView = require("modules/users/views/table.view.js");
+    UsersTableView = require("modules/users/views/table.view.js"),
+    UsersCollection = require("modules/users/models/users.collection.js");
 
 
 module.exports = Marionette.Application.extend({
@@ -15,17 +16,15 @@ module.exports = Marionette.Application.extend({
     initialize: function(options) {
         this.channel = this.getChannel();
 
-        console.log("Initialized");
+        console.log("App initialized");
     },
 
     onBeforeStart: function(options) {
-        this.collection = new Backbone.Collection([
+        this.collection = new UsersCollection([
             { name: "John Snow", email: "john@snow.com" },
             { name: "Edward Nożycoręki", email: "edi@noz.com" },
             { name: "Mr Anderson", email: "mr@anderson.com" }
         ]);
-
-        console.log("Before start");
     },
 
     onStart: function(options) {
@@ -36,5 +35,7 @@ module.exports = Marionette.Application.extend({
         this.channel.trigger("root:header:show", new HeaderView());
         this.channel.trigger("root:content:show", new UsersTableView({ collection: this.collection }));
         this.channel.trigger("root:footer:show", new FooterView());
+
+        console.log("Application started");
     }
 });
