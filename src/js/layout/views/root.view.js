@@ -1,7 +1,7 @@
 "use strict";
 
-var Marionette = require("backbone.marionette"),
-    RootTemplate = require("../templates/root.template.ejs"),
+const Marionette = require("backbone.marionette"),
+    RootTemplate = require("layout/templates/root.template.ejs"),
     Radio = require('backbone.radio');
 
 

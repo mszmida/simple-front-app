@@ -1,14 +1,14 @@
 "use strict";
 
-var Backbone = require("backbone"),
+const Backbone = require("backbone"),
     Marionette = require("backbone.marionette"),
-    RootView = require("../views/root.view.js"),
-    HeaderView = require("../views/header.view.js"),
-    FooterView = require("../views/footer.view.js"),
-    UsersTableView = require("../views/users/table.view.js");
+    RootView = require("layout/views/root.view.js"),
+    HeaderView = require("layout/views/header.view.js"),
+    FooterView = require("layout/views/footer.view.js"),
+    UsersTableView = require("modules/users/views/table.view.js");
 
 
-var App = Marionette.Application.extend({
+module.exports = Marionette.Application.extend({
     channelName: "global",
     region: "#root-region",
 
@@ -38,7 +38,3 @@ var App = Marionette.Application.extend({
         this.channel.trigger("root:footer:show", new FooterView());
     }
 });
-
-// application initialization
-var app = new App();
-app.start();

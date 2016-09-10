@@ -1,7 +1,7 @@
 "use strict";
 
-var Marionette = require("backbone.marionette"),
-    UserRowView = require("./row.view.js");
+const Marionette = require("backbone.marionette"),
+    UserRowView = require("modules/users/views/row.view.js");
 
 
 module.exports = Marionette.CollectionView.extend({

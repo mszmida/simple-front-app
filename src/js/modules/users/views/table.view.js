@@ -1,8 +1,8 @@
 "use strict";
 
-var Marionette = require("backbone.marionette"),
-    UsersTableTemplate = require("../../templates/users/table.template.ejs"),
-    UsersCollectionView = require("./collection.view.js");
+const Marionette = require("backbone.marionette"),
+    UsersTableTemplate = require("modules/users/templates/table.template.ejs"),
+    UsersCollectionView = require("modules/users/views/collection.view.js");
 
 
 module.exports = Marionette.View.extend({
