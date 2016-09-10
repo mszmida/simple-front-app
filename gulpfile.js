@@ -28,7 +28,7 @@ function makeBundle(browserify) {
         // conversion from vinyl stream into vinyl buffer
         .pipe(buffer())
         // piping stream further
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(rename("main.min.js"))
         .pipe(size())
         .pipe(gulp.dest(distPath + "js/"))
@@ -89,7 +89,7 @@ gulp.task("build-js", function() {
 
 gulp.task("watch", ["watch-html", "watch-js"]);
 
-gulp.task("watch-html", function() {
+gulp.task("watch-html", ["copy-index"], function() {
     gulp.watch(indexPath, ["copy-index"]);
 });
 
