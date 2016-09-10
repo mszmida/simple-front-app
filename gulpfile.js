@@ -16,7 +16,7 @@ const gulp = require("gulp"),
 
 
 const indexPath = "./src/index.html",
-    mainPath = "./src/init.js",
+    entries = ["./src/init.js"],
     paths = ["./src/js/"],
     distPath = "./dist/";
 
@@ -78,7 +78,7 @@ gulp.task("copy-index", function() {
 
 gulp.task("build-js", function() {
     var b = browserify({
-            entries: [mainPath],
+            entries: entries,
             paths: paths,
             debug: true
         });
@@ -97,7 +97,7 @@ gulp.task("watch-html", ["copy-index"], function() {
 
 gulp.task("watch-js", function() {
     var b = browserify({
-            entries: [mainPath],
+            entries: entries,
             paths: paths,
             debug: true,
             cache: {},
