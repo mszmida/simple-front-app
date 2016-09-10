@@ -1,12 +1,12 @@
 "use strict";
 
 var Marionette = require("backbone.marionette"),
-    RootViewTemplate = require("../templates/root.template.ejs"),
+    RootTemplate = require("../templates/root.template.ejs"),
     Radio = require('backbone.radio');
 
 
 module.exports = Marionette.View.extend({
-    template: RootViewTemplate,
+    template: RootTemplate,
 
     regions: {
         headerRegion: "#header-region",
