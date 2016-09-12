@@ -21,14 +21,30 @@ module.exports = Marionette.Object.extend({
         this.layoutView = new LayoutView();
     },
 
-    showLayout: function () {
+    isLayoutShown: function () {
+        return this.region.hasView();
+    },
+
+    getContentRegion: function () {
+        return this.layoutView.getRegion("contentRegion");
+    },
+
+    showLayout: function (callback) {
         if (!this.region) {
             throw new Error("Layout 'region' must be defined!");
         }
 
-        this.region.show(this.layoutView);
-        this.layoutView.showChildView("headerRegion", new HeaderView());
-        this.layoutView.showChildView("footerRegion", new FooterView());
+        if (typeof callback !== "function") {
+            throw new Error("Argument is not a funcion!");
+        }
+
+        if (!this.isLayoutShown()) {
+            this.region.show(this.layoutView);
+            this.layoutView.showChildView("headerRegion", new HeaderView());
+            this.layoutView.showChildView("footerRegion", new FooterView());
+        }
+
+        callback(this.getContentRegion());
     },
 
     showHeader: function (view) {

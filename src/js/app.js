@@ -3,7 +3,7 @@
 const Backbone = require("backbone"),
     Marionette = require("backbone.marionette"),
     LayoutController = require("layout/layout.controller.js"),
-    UsersController = require("modules/users/users.controller.js");
+    HomeModule = require("modules/home/home.module.js");
 
 
 module.exports = Marionette.Application.extend({
@@ -17,15 +17,25 @@ module.exports = Marionette.Application.extend({
     },
 
     onBeforeStart: function(options) {
+        this.channel.on("navigate", function (route, options) {
+            Backbone.history.navigate(route, options);
+        });
+
+        // init layout
+        // it must be defined before routers
         new LayoutController({ region: this.getRegion() });
-        new UsersController();
+
+        // init home module
+        new HomeModule();
     },
 
     onStart: function(options) {
+        // history should be start after the routers and modules initialization
         Backbone.history.start();
 
-        this.channel.trigger("layout:show");
-        this.channel.trigger("users:show");
+        if (Backbone.history.fragment === "") {
+            this.channel.trigger("home:show");
+        }
 
         console.log("Application started");
     }
