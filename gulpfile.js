@@ -1,25 +1,38 @@
 "use strict";
 
 const gulp = require("gulp"),
-    gutil = require('gulp-util'),
+    gutil = require("gulp-util"),
+    chalk = require("chalk"),
     del = require("del"),
     changed = require("gulp-changed"),
     browserify = require("browserify"),
-    watchify = require('watchify'),
+    watchify = require("watchify"),
     jstify = require("jstify"),
     source = require("vinyl-source-stream"),
-    buffer = require('vinyl-buffer'),
-    uglify = require('gulp-uglify'),
+    buffer = require("vinyl-buffer"),
+    gif = require("gulp-if"),
+    sourcemaps = require("gulp-sourcemaps"),
+    uglify = require("gulp-uglify"),
     rename = require("gulp-rename"),
-    size = require('gulp-size'),
-    runSequence = require('run-sequence');
+    size = require("gulp-size"),
+    runSequence = require("run-sequence");
 
 
-const indexPath = "./src/index.html",
-    entries = ["./src/init.js"],
-    paths = ["./src/js/"],
-    distPath = "./dist/";
+const config =  {
+        indexPath: "./src/index.html",
+        entries: ["./src/init.js"],
+        paths: ["./src/js/"],
+        distPath: "./dist/",
+        prod: !!gutil.env.production
+    },
+    // bold theme definition
+    bold = chalk.bold,
+    ENV = bold.green(!config.prod ? "development" : "production"),
+    ERROR = bold(`[ ${bold.red("ERROR")} ]`),
+    OK = bold(`[ ${bold.green("OK")} ]`);
 
+
+gutil.log(bold(`[ LOG ] Gulp started in ${ENV} mode!`));
 
 function makeBundle(browserify) {
     return browserify.bundle()
@@ -28,13 +41,15 @@ function makeBundle(browserify) {
         .pipe(source("main.js"))
         // conversion from vinyl stream into vinyl buffer
         .pipe(buffer())
-        // piping stream further
-        // .pipe(uglify())
+        // piping stream further to another plugins
+        .pipe( gif(!config.prod, sourcemaps.init({ loadMaps: true })) )
+        .pipe(uglify().on("error", gutil.log))
         .pipe(rename("main.min.js"))
-        .pipe(size())
-        .pipe(gulp.dest(distPath + "js/"))
+        .pipe(size({ title: "Bundle size:" }))
+        .pipe( gif(!config.prod, sourcemaps.write("./")) )
+        .pipe(gulp.dest(config.distPath + "js/"))
             .on("end", function () {
-                gutil.log("Building JavaScript bundle has been completed!\n");
+                gutil.log(bold(`${OK} Building JavaScript bundle has been completed!\n`));
             });
 }
 
@@ -51,35 +66,35 @@ gulp.task("assembly", function(callback) {
     runSequence("clean", "copy-index", "build-js", function(err) {
         if (err) {
             var exitCode = 1;
-            gutil.log("[ERROR] gulp build task failed", err);
-            gutil.log("[FAIL] gulp build task failed - exiting with code " + exitCode);
+            gutil.log(bold(`${ERROR} Task 'assembly' failed: ${err}`));
+            gutil.log(bold(`${ERROR} Task 'assembly' - exiting with code ${exitCode}`));
 
             return process.exit(exitCode);
         }
 
-        gutil.log("Project assembling has been completed!");
+        gutil.log(bold(`${OK} Project assembling has been completed!`));
 
         return callback();
     });
 });
 
 gulp.task("clean", function() {
-    return del(distPath).then(paths => {
-        gutil.log("Cleaning has been completed!");
+    return del(config.distPath).then(paths => {
+        gutil.log(bold(`${OK} Cleaning has been completed!`));
     });
 });
 
 gulp.task("copy-index", function() {
-    return copy(indexPath, distPath)
+    return copy(config.indexPath, config.distPath)
         .on("end", function () {
-            gutil.log("Index file has been updated!");
+            gutil.log(bold(`${OK} Index file has been updated!`));
         });
 });
 
 gulp.task("build-js", function() {
     var b = browserify({
-            entries: entries,
-            paths: paths,
+            entries: config.entries,
+            paths: config.paths,
             debug: true
         });
 
@@ -89,16 +104,18 @@ gulp.task("build-js", function() {
     return makeBundle(b);
 });
 
-gulp.task("watch", ["watch-html", "watch-js"]);
+gulp.task("watch", function (callback) {
+    runSequence("clean", ["watch-html", "watch-js"], callback);
+});
 
 gulp.task("watch-html", ["copy-index"], function() {
-    gulp.watch(indexPath, ["copy-index"]);
+    gulp.watch(config.indexPath, ["copy-index"]);
 });
 
 gulp.task("watch-js", function() {
     var b = browserify({
-            entries: entries,
-            paths: paths,
+            entries: config.entries,
+            paths: config.paths,
             debug: true,
             cache: {},
             packageCache: {},
@@ -108,6 +125,8 @@ gulp.task("watch-js", function() {
         ignoreWatch: ["**/node_modules/**"]
     })
         .on("update", function () {
+            gutil.log(bold("[ LOG ] Changes in JavaScript detected!"));
+
             return makeBundle(b);
         })
         .on("log", function (msg) {
