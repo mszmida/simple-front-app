@@ -141,7 +141,8 @@ gulp.task("sass", function() {
     return gulp.src(config.sassPath)
         .pipe( gif(!config.prod, sourcemaps.init()) )
         .pipe(sass({
-            includePaths: ["./node_modules/bootstrap-sass/assets/stylesheets/"]
+            includePaths: ["./node_modules/bootstrap-sass/assets/stylesheets/"],
+            precision: 8
         }).on("error", sass.logError))
         // PostCSS
         .pipe(postcss(processors))
