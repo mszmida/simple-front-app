@@ -177,7 +177,7 @@ gulp.task("watch-js", function() {
         ignoreWatch: ["**/node_modules/**"]
     })
         .on("update", function (ids) {
-            gutil.log(bold(`[ LOG ] Changes in JavaScript files: ${bold.green(ids.join(", "))} has been detected...`));
+            gutil.log(bold(`[ LOG ] Changes in JavaScript files:\n${bold.green(ids.join("\n"))}\nhas been detected...`));
 
             return makeBundle(b);
         })
