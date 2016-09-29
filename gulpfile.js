@@ -45,7 +45,7 @@ gutil.log(bold(`[ LOG ] Gulp started in ${ENV} mode!`));
 function makeBundle(browserify) {
     return browserify.bundle()
             .on("error", function (err) {
-                gutil.log(bold(`${ERROR} Browserify bundle() error: ${err}`));
+                gutil.log(bold(`${ERROR} Browserify bundle(): ${err}`));
             })
         // conversion from browserify text stream into vinyl stream
         .pipe(source("main.js"))
@@ -53,10 +53,10 @@ function makeBundle(browserify) {
         .pipe(buffer())
         // piping stream further to another plugins
         .pipe( gif(!config.prod, sourcemaps.init({ loadMaps: true })) )
-        .pipe(uglify()
+        .pipe( gif(config.prod, uglify()
             .on("error", function (err) {
-                gutil.log(bold(`${ERROR} Uglify error: ${err}`));
-            }))
+                gutil.log(bold(`${ERROR} Uglify: ${err}`));
+            })) )
         .pipe(rename("main.min.js"))
         .pipe(size({ title: "JavaScript bundle size:" }))
         .pipe( gif(!config.prod, sourcemaps.write(".")) )
@@ -134,9 +134,12 @@ gulp.task("sass", function() {
                 "Opera >= 12",
                 "Safari >= 6"
             ]
-        }),
-        cssnano
+        })
     ];
+
+    if (config.prod) {
+        processors.push(cssnano);
+    }
 
     return gulp.src(config.sassPath)
         .pipe( gif(!config.prod, sourcemaps.init()) )
