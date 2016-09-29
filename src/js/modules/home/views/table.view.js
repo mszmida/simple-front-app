@@ -18,6 +18,6 @@ module.exports = Marionette.View.extend({
     },
 
     onRender: function() {
-        this.showChildView("tableBody", new UsersCollectionView({ collection: this.collection }));
+        this.showChildView("tableBody", new UsersCollectionView({ collection: this.getOption("users") }));
     }
 });

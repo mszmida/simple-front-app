@@ -14,5 +14,11 @@ module.exports = Marionette.View.extend({
 
     triggers: {
         "click @ui.dropdownButton": "dropdown:button:clicked"
+    },
+
+    templateContext: function() {
+        return {
+            index: this.getOption("index") + 1
+        }
     }
 });

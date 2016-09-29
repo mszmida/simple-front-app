@@ -2,7 +2,7 @@
 
 const Marionette = require('backbone.marionette'),
     UsersCollection = require("modules/home/models/users.collection.js"),
-    UsersTableView = require("modules/home/views/table.view.js");
+    UsersView = require("modules/home/views/users.view.js");
 
 
 module.exports = Marionette.Object.extend({
@@ -17,7 +17,7 @@ module.exports = Marionette.Object.extend({
             ]);
 
         channel.trigger("layout:show", function (contentRegion) {
-            contentRegion.show(new UsersTableView({ collection: users }));
+            contentRegion.show(new UsersView({ users: users }));
         });
     }
 });

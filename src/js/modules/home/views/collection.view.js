@@ -13,6 +13,12 @@ module.exports = Marionette.CollectionView.extend({
         "dropdown:button:clicked": "dropdownToggle"
     },
 
+    childViewOptions: function(model, index) {
+        return {
+            index: index
+        }
+    },
+
     initialize: function () {
         this.previousDropdownButton = null;
         this.documentClickHandler = this.documentOnClick.bind(this);
