@@ -1,7 +1,7 @@
 "use strict";
 
 const Marionette = require("backbone.marionette"),
-    HomeController = require("modules/home/home.controller.js");
+    HomeController = require("modules/home/controllers/home.controller.js");
 
 
 module.exports =  Marionette.Object.extend({

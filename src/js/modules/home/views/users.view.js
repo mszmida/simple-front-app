@@ -2,7 +2,7 @@
 
 const Marionette = require("backbone.marionette"),
     UsersTemplate = require("modules/home/templates/users.template.ejs"),
-    UsersTableView = require("modules/home/views/table.view.js");
+    UsersTableView = require("modules/home/views/table/table.view.js");
 
 
 module.exports = Marionette.View.extend({

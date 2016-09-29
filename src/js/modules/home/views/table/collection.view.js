@@ -1,7 +1,7 @@
 "use strict";
 
 const Marionette = require("backbone.marionette"),
-    UserRowView = require("modules/home/views/row.view.js"),
+    UserRowView = require("modules/home/views/table/row.view.js"),
     $ = require("jquery");
 
 
