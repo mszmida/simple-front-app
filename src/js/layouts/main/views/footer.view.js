@@ -1,9 +1,9 @@
 "use strict";
 
 const Marionette = require("backbone.marionette"),
-    HeaderTemplate = require("layout/templates/header.template.ejs");
+    FooterTemplate = require("layouts/main/templates/footer.template.ejs");
 
 
 module.exports = Marionette.View.extend({
-    template: HeaderTemplate
+    template: FooterTemplate
 });

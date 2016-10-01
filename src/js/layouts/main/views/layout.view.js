@@ -1,7 +1,7 @@
 "use strict";
 
 const Marionette = require("backbone.marionette"),
-    LayoutTemplate = require("layout/templates/layout.template.ejs");
+    LayoutTemplate = require("layouts/main/templates/layout.template.ejs");
 
 
 module.exports = Marionette.View.extend({

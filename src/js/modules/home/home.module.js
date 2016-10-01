@@ -27,8 +27,6 @@ module.exports =  Marionette.Object.extend({
     },
 
     onBeforeDestroy: function () {
-        if (this.controller) {
-            this.controller.destroy();
-        }
+        this.controller.destroy();
     }
 });

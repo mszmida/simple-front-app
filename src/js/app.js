@@ -2,13 +2,12 @@
 
 const Backbone = require("backbone"),
     Marionette = require("backbone.marionette"),
-    LayoutController = require("layout/layout.controller.js"),
+    Layout = require("layouts/layout.js"),
     HomeModule = require("modules/home/home.module.js");
 
 
 module.exports = Marionette.Application.extend({
     channelName: "global",
-    region: "#root-region",
 
     initialize: function(options) {
         this.channel = this.getChannel();
@@ -23,7 +22,7 @@ module.exports = Marionette.Application.extend({
 
         // init layout
         // it must be defined before routers
-        new LayoutController({ region: this.getRegion() });
+        new Layout();
 
         // init home module
         new HomeModule();

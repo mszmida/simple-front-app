@@ -1,8 +1,8 @@
 "use strict";
 
-const App = require("app.js");
+const App = require("app.js"),
+    // application initialization
+    app = new App();
 
 
-// application initialization
-var app = new App();
 app.start();

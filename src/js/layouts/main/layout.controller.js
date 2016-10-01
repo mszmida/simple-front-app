@@ -1,16 +1,15 @@
 "use strict";
 
-const Marionette = require('backbone.marionette'),
-    LayoutView = require("layout/views/layout.view.js"),
-    HeaderView = require("layout/views/header.view.js"),
-    FooterView = require("layout/views/footer.view.js");
+const Marionette = require("backbone.marionette"),
+    LayoutView = require("layouts/main/views/layout.view.js"),
+    HeaderView = require("layouts/main/views/header.view.js"),
+    FooterView = require("layouts/main/views/footer.view.js");
 
 
 module.exports = Marionette.Object.extend({
     channelName: "global",
 
     radioEvents: {
-        "layout:show": "showLayout",
         "layout:header:show": "showHeader",
         "layout:content:show": "showContent",
         "layout:footer:show": "showFooter"
@@ -19,6 +18,8 @@ module.exports = Marionette.Object.extend({
     initialize: function(options) {
         this.region = this.getOption("region");
         this.layoutView = new LayoutView();
+
+        this.showLayout(this.getOption("callback"));
     },
 
     isLayoutShown: function () {
@@ -29,12 +30,12 @@ module.exports = Marionette.Object.extend({
         return this.layoutView.getRegion("contentRegion");
     },
 
-    showLayout: function (callback) {
+    showLayout: function (done) {
         if (!this.region) {
             throw new Error("Layout 'region' must be defined!");
         }
 
-        if (typeof callback !== "function") {
+        if (typeof done !== "function") {
             throw new Error("Argument is not a funcion!");
         }
 
@@ -44,7 +45,7 @@ module.exports = Marionette.Object.extend({
             this.layoutView.showChildView("footerRegion", new FooterView());
         }
 
-        callback(this.getContentRegion());
+        done(this.getContentRegion());
     },
 
     showHeader: function (view) {
@@ -57,5 +58,9 @@ module.exports = Marionette.Object.extend({
 
     showFooter: function (view) {
         this.layoutView.showChildView("footerRegion", view);
+    },
+
+    onBeforeDestroy: function () {
+        this.layoutView.destroy();
     }
 });

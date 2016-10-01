@@ -2,15 +2,20 @@
 
 const Marionette = require("backbone.marionette"),
     UserRowView = require("modules/home/views/table/row.view.js"),
+    UserCreateEditView = require("modules/home/views/user.create.edit.view.js"),
+    Radio = require("backbone.radio"),
     $ = require("jquery");
 
 
 module.exports = Marionette.CollectionView.extend({
     tagName: "tbody",
+
     childView: UserRowView,
 
     childViewEvents: {
-        "dropdown:button:clicked": "dropdownToggle"
+        "user:dropdown:button:clicked": "dropdownToggle",
+        "user:edit:clicked": "editUser",
+        "user:remove:clicked": "removeUser"
     },
 
     childViewOptions: function(model, index) {
@@ -20,6 +25,7 @@ module.exports = Marionette.CollectionView.extend({
     },
 
     initialize: function () {
+        this.channel = Radio.channel("global");
         this.previousDropdownButton = null;
         this.documentClickHandler = this.documentOnClick.bind(this);
 
@@ -67,7 +73,7 @@ module.exports = Marionette.CollectionView.extend({
     },
 
     dropdownToggle: function (child) {
-        var dropdownButton = child.getUI("dropdownButton"),
+        var dropdownButton = child.getUI("userDropdownButton"),
             dropdownButtonParent = dropdownButton.parent();
 
         if (!this.isPreviousDropdownButton(dropdownButton)) {
@@ -81,6 +87,18 @@ module.exports = Marionette.CollectionView.extend({
         dropdownButton.attr("aria-expanded", function (i, val) {
             return val === "true" ? "false" : "true";
         });
+    },
+
+    getUserCreateEditView: function (options) {
+        return new UserCreateEditView(options);
+    },
+
+    editUser: function (child) {
+        this.channel.trigger("modal:show", { title: "Edit user", body: this.getUserCreateEditView({ isCreate: false }) });
+    },
+
+    removeUser: function () {
+        console.log("remove user");
     },
 
     onBeforeDestroy: function() {
