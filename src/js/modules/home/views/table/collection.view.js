@@ -94,7 +94,10 @@ module.exports = Marionette.CollectionView.extend({
     },
 
     editUser: function (child) {
-        this.channel.trigger("modal:show", { title: "Edit user", body: this.getUserCreateEditView({ isCreate: false }) });
+        this.channel.trigger("modal:show", {
+            title: "Edit user",
+            body: this.getUserCreateEditView({ isCreate: false })
+        });
     },
 
     removeUser: function () {

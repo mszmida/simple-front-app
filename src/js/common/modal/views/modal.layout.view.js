@@ -9,7 +9,6 @@ module.exports = Marionette.View.extend({
     template: false,
 
     regions: {
-        rootRegion: "#root-layout-region",
         modalRegion: "#modal-region"
     }
 });

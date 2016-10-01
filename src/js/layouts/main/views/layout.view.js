@@ -6,6 +6,7 @@ const Marionette = require("backbone.marionette"),
 
 module.exports = Marionette.View.extend({
     className: "container",
+
     template: LayoutTemplate,
 
     regions: {

@@ -40,7 +40,10 @@ module.exports = Marionette.View.extend({
     },
 
     createUser: function () {
-        this.channel.trigger("modal:show", { title: "Create user", body: this.getUserCreateEditView() });
+        this.channel.trigger("modal:show", {
+            title: "Create user",
+            body: this.getUserCreateEditView()
+        });
     },
 
     onRender: function() {

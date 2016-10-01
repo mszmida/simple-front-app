@@ -8,11 +8,13 @@ const Marionette = require('backbone.marionette'),
 module.exports = Marionette.Object.extend({
     channelName: "global",
 
-    initialize: function () {
-        var channel = this.getChannel();
+    radioEvents: {
+        "user:create": "createUser",
+        "user:edit": "editUser"
+    },
 
-        this.listenTo(channel, "user:create", this.createUser);
-        this.listenTo(channel, "user:edit", this.editUser);
+    getUsersView: function (users) {
+        return new UsersView({ users: users });
     },
 
     showHome: function () {
@@ -21,18 +23,19 @@ module.exports = Marionette.Object.extend({
                 { name: "John Snow", email: "john@snow.com" },
                 { name: "Edward Nożycoręki", email: "edi@noz.com" },
                 { name: "Mr Anderson", email: "mr@anderson.com" }
-            ]);
+            ]),
+            self = this;
 
         channel.trigger("layout:show", function (contentRegion) {
-            contentRegion.show(new UsersView({ users: users }));
+            contentRegion.show(self.getUsersView(users));
         });
     },
 
-    createUser: function () {
-        console.log("CONTROLLER: create user");
+    createUser: function (data) {
+        console.log("CONTROLLER: create user", data);
     },
 
-    editUser: function () {
-        console.log("CONTROLLER: edit user");
+    editUser: function (data) {
+        console.log("CONTROLLER: edit user", data);
     }
 });

@@ -7,7 +7,9 @@ const Marionette = require("backbone.marionette"),
 
 module.exports = Marionette.View.extend({
     tagName: "table",
+
     className: "table table-hover table-bordered table-striped",
+
     template: UsersTableTemplate,
 
     regions: {
