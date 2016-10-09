@@ -2,6 +2,7 @@
 
 const Marionette = require("backbone.marionette"),
     UserRowView = require("modules/home/views/table/row.view.js"),
+    UsersEmptyView = require("modules/home/views/table/users.empty.view.js"),
     UserCreateEditView = require("modules/home/views/user.create.edit.view.js"),
     UserRemoveConfirmationView = require("modules/home/views/user.remove.confirmation.view.js"),
     Radio = require("backbone.radio"),
@@ -12,6 +13,8 @@ module.exports = Marionette.CollectionView.extend({
     tagName: "tbody",
 
     childView: UserRowView,
+
+    emptyView: UsersEmptyView,
 
     childViewEvents: {
         "user:dropdown:button:clicked": "dropdownToggle",
