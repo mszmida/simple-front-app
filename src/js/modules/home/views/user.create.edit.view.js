@@ -17,32 +17,31 @@ module.exports = Marionette.View.extend({
     },
 
     ui: {
-        userSaveSubmit: ".js-user-save-submit"
+        userSubmit: ".js-user-submit"
     },
 
     events: {
-        "click @ui.userSaveSubmit": "saveUserSubmit"
+        "click @ui.userSubmit": "userSubmit"
     },
 
     initialize: function () {
         this.channel = Radio.channel("global");
         this.isCreate = this.getOption("isCreate") !== false;
-        this.model = this.getOption("model");
-
-        // if (!this.isCreate && !this.model) {
-        //     throw new Error("Model need to be defined!");
-        // }
     },
 
-    saveUserSubmit: function (event) {
-        var data = this.$el.children("form").serializeArray();
+    userSubmit: function (event) {
+        var formData = this.$el.children("form").serializeArray();
 
         event.preventDefault();
 
         if (this.isCreate) {
-            this.channel.trigger("user:create", data);
+            this.channel.trigger("user:create", formData);
         } else {
-            this.channel.trigger("user:edit", data);
+            this.channel.trigger("user:edit", formData, this.getOption("model"));
         }
+    },
+
+    onBeforeDestroy: function () {
+        delete this.channel;
     }
 });

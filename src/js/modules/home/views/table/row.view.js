@@ -31,5 +31,14 @@ module.exports = Marionette.View.extend({
             event: "user:remove:clicked",
             stopPropagation: false
         }
+    },
+
+    modelEvents: {
+        "change": "onModelChange"
+    },
+
+    onModelChange: function () {
+        // re-render modified item
+        this.render();
     }
 });

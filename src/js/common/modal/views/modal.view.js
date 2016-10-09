@@ -59,5 +59,7 @@ module.exports = Marionette.View.extend({
 
     onBeforeDestroy: function () {
         this.bodyView.destroy();
+
+        delete this.channel;
     }
 });

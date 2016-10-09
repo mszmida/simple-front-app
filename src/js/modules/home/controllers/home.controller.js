@@ -10,32 +10,64 @@ module.exports = Marionette.Object.extend({
 
     radioEvents: {
         "user:create": "createUser",
-        "user:edit": "editUser"
+        "user:edit": "editUser",
+        "user:remove": "removeUser"
+    },
+
+    initialize: function () {
+        this.channel = this.getChannel();
+        this.users = new UsersCollection([
+            { name: "John Snow", email: "john@snow.com" },
+            { name: "Edward Nożycoręki", email: "edi@noz.com" },
+            { name: "Mr Anderson", email: "mr@anderson.com" }
+        ]);
     },
 
     getUsersView: function (users) {
-        return new UsersView({ users: users });
+        return new UsersView({ collection: users });
     },
 
     showHome: function () {
-        var channel = this.getChannel(),
-            users = new UsersCollection([
-                { name: "John Snow", email: "john@snow.com" },
-                { name: "Edward Nożycoręki", email: "edi@noz.com" },
-                { name: "Mr Anderson", email: "mr@anderson.com" }
-            ]),
-            self = this;
+        var self = this;
 
-        channel.trigger("layout:show", function (contentRegion) {
-            contentRegion.show(self.getUsersView(users));
+        this.channel.trigger("layout:show", function (contentRegion) {
+            contentRegion.show(self.getUsersView(self.users));
         });
     },
 
-    createUser: function (data) {
-        console.log("CONTROLLER: create user", data);
+    parseFormData: function (formData) {
+        var data = { };
+
+        formData.forEach(function (field) {
+            data[field.name] = field.value;
+        });
+
+        return data;
     },
 
-    editUser: function (data) {
-        console.log("CONTROLLER: edit user", data);
+    createUser: function (formData) {
+        this.users.add(this.parseFormData(formData));
+
+        this.channel.trigger("modal:close");
+    },
+
+    editUser: function (formData, userModel) {
+        userModel.set(this.parseFormData(formData));
+
+        this.channel.trigger("modal:close");
+    },
+
+    removeUser: function (model, collection) {
+        collection.remove(model);
+
+        this.channel.trigger("modal:close");
+    },
+
+    onBeforeDestroy: function () {
+        this.users.reset();
+
+        delete this.users;
+
+        delete this.channel;
     }
 });

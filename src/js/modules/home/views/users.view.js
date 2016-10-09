@@ -36,7 +36,7 @@ module.exports = Marionette.View.extend({
     },
 
     getUsersTableView: function () {
-        return new UsersTableView({ users: this.getOption("users") });
+        return new UsersTableView({ collection: this.getOption("collection") });
     },
 
     createUser: function () {
@@ -46,7 +46,11 @@ module.exports = Marionette.View.extend({
         });
     },
 
-    onRender: function() {
+    onRender: function () {
         this.showChildView("table", this.getUsersTableView());
+    },
+
+    onBeforeDestroy: function () {
+        delete this.channel;
     }
 });

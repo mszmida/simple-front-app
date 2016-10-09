@@ -3,6 +3,7 @@
 const Marionette = require("backbone.marionette"),
     UserRowView = require("modules/home/views/table/row.view.js"),
     UserCreateEditView = require("modules/home/views/user.create.edit.view.js"),
+    UserRemoveConfirmationView = require("modules/home/views/user.remove.confirmation.view.js"),
     Radio = require("backbone.radio"),
     $ = require("jquery");
 
@@ -22,6 +23,15 @@ module.exports = Marionette.CollectionView.extend({
         return {
             index: index
         }
+    },
+
+    collectionEvents: {
+        remove: "onCollectionRemove"
+    },
+
+    onCollectionRemove: function () {
+        // re-render entire collection to refresh models indexes
+        this.render();
     },
 
     initialize: function () {
@@ -93,20 +103,32 @@ module.exports = Marionette.CollectionView.extend({
         return new UserCreateEditView(options);
     },
 
+    getUserRemoveConfirmView: function (options) {
+        return new UserRemoveConfirmationView(options);
+    },
+
     editUser: function (child) {
         this.channel.trigger("modal:show", {
             title: "Edit user",
-            body: this.getUserCreateEditView({ isCreate: false })
+            body: this.getUserCreateEditView({ isCreate: false, model: child.model })
         });
     },
 
-    removeUser: function () {
-        console.log("remove user");
+    removeUser: function (child) {
+        var model = child.model,
+            collection = this.getOption("collection");
+
+        this.channel.trigger("modal:show", {
+            title: "Remove user - confirmation",
+            body: this.getUserRemoveConfirmView({ model: child.model, collection: collection })
+        });
     },
 
-    onBeforeDestroy: function() {
+    onBeforeDestroy: function () {
         $(document).off("click", this.documentClickHandler);
 
         this.previousDropdownButton = null;
+
+        delete this.channel;
     }
 });

@@ -38,5 +38,9 @@ module.exports = Marionette.Object.extend({
 
         this.modalRegion.$el.hide();
         this.modalRegion.$el.next(".modal-backdrop").remove();
+    },
+
+    onBeforeDestroy: function () {
+        this.modalLayoutView.destroy();
     }
 });
