@@ -12,18 +12,18 @@ module.exports =  Marionette.Object.extend({
         var channel = this.getChannel();
 
         this.service = new UsersService();
-    	this.controller = new HomeController();
+        this.controller = new HomeController();
 
         // init 'home' module router
-    	new Marionette.AppRouter({
-    		controller: this.controller,
+        new Marionette.AppRouter({
+        	controller: this.controller,
 
-		    appRoutes: {
-		        "home": "showHome"
-		    }
-		});
+            appRoutes: {
+                "home": "showHome"
+            }
+        });
 
-		this.listenTo(channel, "home:show", function () {
+        this.listenTo(channel, "home:show", function () {
             channel.trigger("navigate", "home");
             this.controller.showHome();
         });

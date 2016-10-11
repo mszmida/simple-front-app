@@ -3,7 +3,8 @@
 const Marionette = require('backbone.marionette'),
     UsersCollection = require("modules/home/models/users.collection.js"),
     UsersView = require("modules/home/views/users.view.js"),
-    UsersFetchFailedView = require("modules/home/views/users.fetch.failed.view.js");
+    UsersFetchFailedTemplate = require("modules/home/templates/users.fetch.failed.template.ejs"),
+    UsersFailedTemplate = require("modules/home/templates/users.failed.template.ejs");
 
 
 module.exports = Marionette.Object.extend({
@@ -25,14 +26,33 @@ module.exports = Marionette.Object.extend({
     },
 
     getUsersFetchFailedView: function () {
-        return new UsersFetchFailedView();
+        return new Marionette.View({
+            template: UsersFetchFailedTemplate
+        });
+    },
+
+    getFailedView: function () {
+        return new Marionette.View({
+            className: "modal-body",
+            template: UsersFailedTemplate
+        });
     },
 
     showHome: function () {
-        console.log("show home");
         this.channel.request("service:users:fetch")
             .done(this._onFetchUsersSuccess.bind(this))
             .fail(this._onFetchUsersFail.bind(this));
+    },
+
+    // TODO: finally move to users service
+    parseFormData: function (formData) {
+        var data = { };
+
+        formData.forEach(function (field) {
+            data[field.name] = field.value;
+        });
+
+        return data;
     },
 
     _onFetchUsersSuccess: function (res) {
@@ -53,20 +73,27 @@ module.exports = Marionette.Object.extend({
         });
     },
 
-    parseFormData: function (formData) {
-        var data = { };
-
-        formData.forEach(function (field) {
-            data[field.name] = field.value;
-        });
-
-        return data;
+    createUser: function (formData) {
+        this.channel.request("service:user:create", formData)
+            .done(this._onCreateUserSuccess.bind(this))
+            .fail(this._onCreateUserFail.bind(this));
     },
 
-    createUser: function (formData) {
-        this.users.add(this.parseFormData(formData));
+    _onCreateUserSuccess: function (res) {
+        this.users.add(res.data);
 
         this.channel.trigger("modal:close");
+    },
+
+    _onCreateUserFail: function () {
+        this.channel.trigger("modal:close", this._showFailedModal.bind(this));
+    },
+
+    _showFailedModal: function (title) {
+        this.channel.trigger("modal:show", {
+            title: "Operation failed!",
+            body: this.getFailedView()
+        });
     },
 
     editUser: function (formData, userModel) {

@@ -31,13 +31,21 @@ module.exports = Marionette.Object.extend({
         this.modalRegion.$el.after("<div class=\"modal-backdrop in\"></div>");
     },
 
-    closeModal: function () {
+    closeModal: function (done) {
+        if (done && typeof done !== "function") {
+            throw new Error("Argument is not a funcion!");
+        };
+
         this.modalRegion.empty();
         // body
         this.modalLayoutView.$el.removeClass("modal-open");
 
         this.modalRegion.$el.hide();
         this.modalRegion.$el.next(".modal-backdrop").remove();
+
+        if (done) {
+            done();
+        }
     },
 
     onBeforeDestroy: function () {
