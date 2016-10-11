@@ -2,7 +2,8 @@
 
 const Marionette = require('backbone.marionette'),
     UsersCollection = require("modules/home/models/users.collection.js"),
-    UsersView = require("modules/home/views/users.view.js");
+    UsersView = require("modules/home/views/users.view.js"),
+    UsersFetchFailedView = require("modules/home/views/users.fetch.failed.view.js");
 
 
 module.exports = Marionette.Object.extend({
@@ -16,22 +17,39 @@ module.exports = Marionette.Object.extend({
 
     initialize: function () {
         this.channel = this.getChannel();
-        this.users = new UsersCollection([
-            { name: "John Snow", email: "john@snow.com" },
-            { name: "Edward Nożycoręki", email: "edi@noz.com" },
-            { name: "Mr Anderson", email: "mr@anderson.com" }
-        ]);
+        this.users = new UsersCollection();
     },
 
     getUsersView: function (users) {
         return new UsersView({ collection: users });
     },
 
+    getUsersFetchFailedView: function () {
+        return new UsersFetchFailedView();
+    },
+
     showHome: function () {
+        console.log("show home");
+        this.channel.request("service:users:fetch")
+            .done(this._onFetchUsersSuccess.bind(this))
+            .fail(this._onFetchUsersFail.bind(this));
+    },
+
+    _onFetchUsersSuccess: function (res) {
         var self = this;
+
+        this.users.add(res.data);
 
         this.channel.trigger("layout:show", function (contentRegion) {
             contentRegion.show(self.getUsersView(self.users));
+        });
+    },
+
+    _onFetchUsersFail: function (res) {
+        var self = this;
+
+        this.channel.trigger("layout:show", function (contentRegion) {
+            contentRegion.show(self.getUsersFetchFailedView());
         });
     },
 

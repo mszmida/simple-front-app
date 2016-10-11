@@ -1,6 +1,7 @@
 "use strict";
 
 const Marionette = require("backbone.marionette"),
+    UsersService = require("modules/home/services/users.service.js"),
     HomeController = require("modules/home/controllers/home.controller.js");
 
 
@@ -9,6 +10,8 @@ module.exports =  Marionette.Object.extend({
 
     initialize: function () {
         var channel = this.getChannel();
+
+        this.service = new UsersService();
     	this.controller = new HomeController();
 
         // init 'home' module router
@@ -27,6 +30,7 @@ module.exports =  Marionette.Object.extend({
     },
 
     onBeforeDestroy: function () {
+        this.service.destroy();
         this.controller.destroy();
     }
 });
