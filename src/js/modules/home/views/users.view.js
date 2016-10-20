@@ -4,6 +4,7 @@ const Marionette = require("backbone.marionette"),
     UsersTemplate = require("modules/home/templates/users.template.ejs"),
     UsersTableView = require("modules/home/views/table/table.view.js"),
     UserCreateEditView = require("modules/home/views/user.create.edit.view.js"),
+    UsersPaginationView = require("modules/home/views/users.pagination.view.js"),
     Radio = require("backbone.radio");
 
 
@@ -16,6 +17,10 @@ module.exports = Marionette.View.extend({
         table: {
             el: "table",
             replaceElement: true
+        },
+        panelFooter: {
+            el: "#panel-footer-region",
+            replaceElement: true
         }
     },
 
@@ -27,6 +32,10 @@ module.exports = Marionette.View.extend({
         "click @ui.createUserButton": "createUser"
     },
 
+    modelEvents: {
+        "change:total": "onUsersTotalChanged"
+    },
+
     initialize: function () {
         this.channel = Radio.channel("global");
     },
@@ -36,7 +45,11 @@ module.exports = Marionette.View.extend({
     },
 
     getUsersTableView: function () {
-        return new UsersTableView({ collection: this.getOption("collection") });
+        return new UsersTableView({ model: this.model });
+    },
+
+    getUsersPaginationView: function () {
+        return new UsersPaginationView({ model: this.model });
     },
 
     createUser: function () {
@@ -46,8 +59,16 @@ module.exports = Marionette.View.extend({
         });
     },
 
+    onUsersTotalChanged: function () {
+        console.log("total changed", arguments);
+    },
+
     onRender: function () {
         this.showChildView("table", this.getUsersTableView());
+
+        if (this.model.get("pages") > 1) {
+            this.showChildView("panelFooter", this.getUsersPaginationView());
+        }
     },
 
     onBeforeDestroy: function () {

@@ -1,0 +1,19 @@
+<nav aria-label="PageUsers navigation" class="text-center">
+    <ul class="pagination">
+        <li>
+            <a href="#" class="js-users-previous-page" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        <% for(var i = 0; i < pages; i++) { %>
+            <li><a href="#" class="js-users-page"><%- i + 1 %></a></li>
+        <% } %>
+
+        <li>
+            <a href="#" class="js-users-next-page" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

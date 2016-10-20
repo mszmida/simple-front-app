@@ -11,7 +11,7 @@ module.exports = Marionette.View.extend({
 
     templateContext: function() {
         return {
-            index: this.getOption("index") + 1
+            index: this.getOption("index")
         }
     },
 

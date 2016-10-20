@@ -23,8 +23,11 @@ module.exports = Marionette.CollectionView.extend({
     },
 
     childViewOptions: function(model, index) {
+        var page = this.model.get("page"),
+            limit = this.model.get("limit");
+
         return {
-            index: index
+            index: page * limit - limit + index + 1
         }
     },
 

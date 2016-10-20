@@ -1,6 +1,7 @@
 "use strict";
 
 const Marionette = require('backbone.marionette'),
+    Backbone = require("backbone"),
     UsersView = require("modules/home/views/users.view.js"),
     UsersCollection = require("modules/home/models/users.collection.js"),
     UsersFetchFailedTemplate = require("modules/home/templates/users.fetch.failed.template.ejs"),
@@ -13,16 +14,18 @@ module.exports = Marionette.Object.extend({
     radioEvents: {
         "user:create": "createUser",
         "user:edit": "editUser",
-        "user:remove": "removeUser"
+        "user:remove": "removeUser",
+        "users:show:page": "showUsersPage"
     },
 
     initialize: function () {
         this.channel = this.getChannel();
         this.users = new UsersCollection();
+        this.model = null;
     },
 
-    getUsersView: function (users) {
-        return new UsersView({ collection: users });
+    getUsersView: function (obj) {
+        return new UsersView(obj);
     },
 
     getUsersFetchFailedView: function () {
@@ -38,19 +41,25 @@ module.exports = Marionette.Object.extend({
         });
     },
 
+    fetchUsers: function (page, elements) {
+        return this.channel.request("service:users:fetch", page, elements);
+    },
+
     showHome: function () {
-        this.channel.request("service:users:fetch")
-            .done(this._onFetchUsersSuccess.bind(this))
+        this.fetchUsers(1, 5)
+            .done(this._onFetchUsersInitPageSuccess.bind(this))
             .fail(this._onFetchUsersFail.bind(this));
     },
 
-    _onFetchUsersSuccess: function (res) {
+    _onFetchUsersInitPageSuccess: function (res) {
         var self = this;
 
-        this.users.add(res.data);
+        this.users.reset(res.data.users);
+        res.data.users = this.users;
+        this.model = new Backbone.Model(res.data);
 
         this.channel.trigger("layout:show", function (contentRegion) {
-            contentRegion.show(self.getUsersView(self.users));
+            contentRegion.show(self.getUsersView({ model: self.model }));
         });
     },
 
@@ -60,6 +69,18 @@ module.exports = Marionette.Object.extend({
         this.channel.trigger("layout:show", function (contentRegion) {
             contentRegion.show(self.getUsersFetchFailedView());
         });
+    },
+
+    showUsersPage: function (page) {
+        this.fetchUsers(page, 5)
+            .done(this._onfetchUsersPageSuccess.bind(this))
+            .fail(this._onFetchUsersFail.bind(this));
+    },
+
+    _onfetchUsersPageSuccess: function (res) {
+        this.model.set(res.data);
+
+        this.users.reset(res.data.users);
     },
 
     createUser: function (formData) {
@@ -110,6 +131,10 @@ module.exports = Marionette.Object.extend({
     },
 
     onBeforeDestroy: function () {
+        if (this.model) {
+            delete this.model;
+        }
+
         this.users.reset();
 
         delete this.users;
