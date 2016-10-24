@@ -123,7 +123,7 @@ module.exports = Marionette.Object.extend({
             .fail(this._onCommunicationFail.bind(this));
     },
 
-    _onRemoveUserSuccess: function (model, res) {
+    _onRemoveUserSuccess: function (res) {
         this.showUsersPage(1);
 
         this.channel.trigger("modal:close");
