@@ -26,6 +26,7 @@ module.exports = Marionette.View.extend({
 
     ui: {
         createUserButton: ".js-user-create",
+        usersTotal: ".js-users-total"
     },
 
     events: {
@@ -45,7 +46,7 @@ module.exports = Marionette.View.extend({
     },
 
     getUsersTableView: function () {
-        return new UsersTableView({ model: this.model });
+        return new UsersTableView({ model: this.model, collection: this.collection });
     },
 
     getUsersPaginationView: function () {
@@ -59,8 +60,8 @@ module.exports = Marionette.View.extend({
         });
     },
 
-    onUsersTotalChanged: function () {
-        console.log("total changed", arguments);
+    onUsersTotalChanged: function (model, total) {
+        this.ui.usersTotal.text(total);
     },
 
     onRender: function () {

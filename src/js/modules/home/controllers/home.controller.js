@@ -54,12 +54,11 @@ module.exports = Marionette.Object.extend({
     _onFetchUsersInitPageSuccess: function (res) {
         var self = this;
 
-        this.users.reset(res.data.users);
-        res.data.users = this.users;
         this.model = new Backbone.Model(res.data);
+        this.users.reset(res.data.users);
 
         this.channel.trigger("layout:show", function (contentRegion) {
-            contentRegion.show(self.getUsersView({ model: self.model }));
+            contentRegion.show(self.getUsersView({ model: self.model, collection: self.users }));
         });
     },
 
@@ -90,7 +89,7 @@ module.exports = Marionette.Object.extend({
     },
 
     _onCreateUserSuccess: function (res) {
-        this.users.add(res.data);
+        this.showUsersPage(1);
 
         this.channel.trigger("modal:close");
     },
@@ -107,7 +106,7 @@ module.exports = Marionette.Object.extend({
     },
 
     editUser: function (formData, userModel) {
-        this.channel.request("service:user:edit", formData)
+        this.channel.request("service:user:edit", formData, userModel)
             .done(this._onEditUserSuccess.bind(this, userModel))
             .fail(this._onCommunicationFail.bind(this));
     },
@@ -119,13 +118,13 @@ module.exports = Marionette.Object.extend({
     },
 
     removeUser: function (model, collection) {
-        this.channel.request("service:user:remove", model.toJSON())
-            .done(this._onRemoveUserSuccess.bind(this, model, collection))
+        this.channel.request("service:user:remove", model)
+            .done(this._onRemoveUserSuccess.bind(this))
             .fail(this._onCommunicationFail.bind(this));
     },
 
-    _onRemoveUserSuccess: function (model, collection, res) {
-        collection.remove(model);
+    _onRemoveUserSuccess: function (model, res) {
+        this.showUsersPage(1);
 
         this.channel.trigger("modal:close");
     },

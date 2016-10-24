@@ -10,26 +10,28 @@ module.exports = Marionette.Object.extend({
 
     radioRequests: {
         "service:users:fetch": "fetchUsers",
-        "service:user:create": "createEditUser",
-        "service:user:edit": "createEditUser",
+        "service:user:create": "createUser",
+        "service:user:edit": "editUser",
         "service:user:remove": "removeUser"
     },
 
     initialize: function () {
         // Backbone Collection for internal service usage only
         this.users = new Backbone.Collection([
-            { name: "John Snow", email: "john@snow.com" },
-            { name: "Edward Nożycoręki", email: "edi@noz.com" },
-            { name: "Mr Anderson", email: "mr@anderson.com" },
-            { name: "Mr Anderson2", email: "mr2@anderson.com" },
-            { name: "Mr Anderson3", email: "mr3@anderson.com" },
-            { name: "Mr Anderson4", email: "mr4@anderson.com" },
-            { name: "Mr Anderson5", email: "mr5@anderson.com" },
-            { name: "Mr Anderson6", email: "mr6@anderson.com" },
-            { name: "Mr Anderson7", email: "mr7@anderson.com" },
-            { name: "Mr Anderson8", email: "mr8@anderson.com" },
-            { name: "Mr Anderson9", email: "mr9@anderson.com" }
+            { id: 1, name: "John Snow", email: "john@snow.com" },
+            { id: 2, name: "Edward Nożycoręki", email: "edi@noz.com" },
+            { id: 3, name: "Mr Anderson", email: "mr@anderson.com" },
+            { id: 4, name: "Mr Anderson2", email: "mr2@anderson.com" },
+            { id: 5, name: "Mr Anderson3", email: "mr3@anderson.com" },
+            { id: 6, name: "Mr Anderson4", email: "mr4@anderson.com" },
+            { id: 7, name: "Mr Anderson5", email: "mr5@anderson.com" },
+            { id: 8, name: "Mr Anderson6", email: "mr6@anderson.com" },
+            { id: 9, name: "Mr Anderson7", email: "mr7@anderson.com" },
+            { id: 10, name: "Mr Anderson8", email: "mr8@anderson.com" },
+            { id: 11, name: "Mr Anderson9", email: "mr9@anderson.com" }
         ]);
+
+        this.counter = this.users.length;
     },
 
     // this is only dummy implementation
@@ -73,10 +75,27 @@ module.exports = Marionette.Object.extend({
     },
 
     // this is only dummy implementation
-    // eventually user should be CREATED/UPDATED on the server
-    createEditUser: function (formData) {
+    // eventually user should be CREATED on the server
+    createUser: function (formData) {
         var deferred = $.Deferred(),
             user = this._parseFormData(formData);
+
+        user.id = ++this.counter;
+        this.users.add(user);
+
+        this._simulateServerResponse(deferred, user);
+
+        return deferred.promise();
+    },
+
+    // this is only dummy implementation
+    // eventually user should be UPDATED on the server
+    editUser: function (formData, userModel) {
+        var deferred = $.Deferred(),
+            user = this._parseFormData(formData);
+
+        userModel.set(user);
+        this.users.add(userModel, { merge: true });
 
         this._simulateServerResponse(deferred, user);
 
@@ -85,10 +104,12 @@ module.exports = Marionette.Object.extend({
 
     // this is only dummy implementation
     // eventually user should be REMOVED on the server
-    removeUser: function (modelJSON) {
+    removeUser: function (userModel) {
         var deferred = $.Deferred();
 
-        this._simulateServerResponse(deferred, modelJSON);
+        this.users.remove(userModel);
+
+        this._simulateServerResponse(deferred, userModel.toJSON());
 
         return deferred.promise();
     }

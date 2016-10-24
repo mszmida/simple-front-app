@@ -24,7 +24,8 @@ module.exports = Marionette.View.extend({
     },
 
     modelEvents: {
-        "change:pages": "onPagesChanged"
+        "change:pages": "onPagesChanged",
+        "change:total": "onUsersTotalChanged"
     },
 
     initialize: function () {
@@ -77,6 +78,16 @@ module.exports = Marionette.View.extend({
 
     onPagesChanged: function () {
         this.render();
+    },
+
+    onUsersTotalChanged: function (model) {
+        var firstPage = this.ui.usersPreviousPage.parent().next();
+
+        if (!this.previousActivePage.is(firstPage)) {
+            this.previousActivePage.removeClass("active");
+            this.previousActivePage = firstPage;
+            this.previousActivePage.addClass("active");
+        }
     },
 
     onRender: function () {
