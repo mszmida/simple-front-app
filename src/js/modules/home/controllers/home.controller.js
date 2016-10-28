@@ -5,6 +5,9 @@ const Marionette = require('backbone.marionette'),
     UsersView = require("modules/home/views/users.view.js"),
     UsersCollection = require("modules/home/models/users.collection.js"),
     UsersFetchFailedTemplate = require("modules/home/templates/users.fetch.failed.template.ejs"),
+    UserCreateSuccessTemplate = require("modules/home/templates/alerts/user.create.success.template.ejs"),
+    UserEditSuccessTemplate = require("modules/home/templates/alerts/user.edit.success.template.ejs"),
+    UserRemoveSuccessTemplate = require("modules/home/templates/alerts/user.remove.success.template.ejs"),
     UsersFailedTemplate = require("modules/home/templates/users.failed.template.ejs");
 
 
@@ -24,8 +27,8 @@ module.exports = Marionette.Object.extend({
         this.model = null;
     },
 
-    getUsersView: function (obj) {
-        return new UsersView(obj);
+    getUsersView: function (options) {
+        return new UsersView(options);
     },
 
     getUsersFetchFailedView: function () {
@@ -38,6 +41,27 @@ module.exports = Marionette.Object.extend({
         return new Marionette.View({
             className: "modal-body",
             template: UsersFailedTemplate
+        });
+    },
+
+    getUserCreateSuccessView: function (model) {
+        return new Marionette.View({
+            template: UserCreateSuccessTemplate,
+            model: model
+        });
+    },
+
+    getUserEditSuccessView: function (model) {
+        return new Marionette.View({
+            template: UserEditSuccessTemplate,
+            model: model
+        });
+    },
+
+    getUserRemoveSuccessView: function (model) {
+        return new Marionette.View({
+            template: UserRemoveSuccessTemplate,
+            model: model
         });
     },
 
@@ -92,6 +116,10 @@ module.exports = Marionette.Object.extend({
         this.showUsersPage(1);
 
         this.channel.trigger("modal:close");
+        this.channel.trigger("users:alert:show", {
+            type: "success",
+            body: this.getUserCreateSuccessView(new Backbone.Model(res.data))
+        });
     },
 
     _onCommunicationFail: function () {
@@ -115,6 +143,10 @@ module.exports = Marionette.Object.extend({
         userModel.set(res.data);
 
         this.channel.trigger("modal:close");
+        this.channel.trigger("users:alert:show", {
+            type: "success",
+            body: this.getUserEditSuccessView(new Backbone.Model(res.data))
+        });
     },
 
     removeUser: function (model, collection) {
@@ -127,6 +159,10 @@ module.exports = Marionette.Object.extend({
         this.showUsersPage(1);
 
         this.channel.trigger("modal:close");
+        this.channel.trigger("users:alert:show", {
+            type: "success",
+            body: this.getUserRemoveSuccessView(new Backbone.Model(res.data))
+        });
     },
 
     onBeforeDestroy: function () {

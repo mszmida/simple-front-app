@@ -60,6 +60,8 @@ module.exports = Marionette.View.extend({
     onBeforeDestroy: function () {
         this.bodyView.destroy();
 
+        delete this.bodyView;
+        delete this.title;
         delete this.channel;
     }
 });

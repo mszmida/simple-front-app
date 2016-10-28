@@ -5,8 +5,13 @@ const Marionette = require("backbone.marionette"),
     UsersTableView = require("modules/home/views/table/table.view.js"),
     UserCreateEditView = require("modules/home/views/user.create.edit.view.js"),
     UsersPaginationView = require("modules/home/views/users.pagination.view.js"),
-    Radio = require("backbone.radio");
-
+    AlertView = require("common/alert/views/alert.view.js"),
+    Radio = require("backbone.radio"),
+    AlertRegion = Marionette.Region.extend({
+        onShow: function () {
+            this.$el.hide().slideDown("fast");
+        }
+});
 
 module.exports = Marionette.View.extend({
     className: "users-main-view",
@@ -14,6 +19,10 @@ module.exports = Marionette.View.extend({
     template: UsersTemplate,
 
     regions: {
+        alerts: {
+            regionClass: AlertRegion,
+            el: "#users-alerts-region"
+        },
         table: {
             el: "table",
             replaceElement: true
@@ -39,6 +48,12 @@ module.exports = Marionette.View.extend({
 
     initialize: function () {
         this.channel = Radio.channel("global");
+
+        this.listenTo(this.channel, "users:alert:show", this.showAlert);
+    },
+
+    getAlertView: function (options) {
+        return new AlertView(options);
     },
 
     getUserCreateEditView: function () {
@@ -51,6 +66,21 @@ module.exports = Marionette.View.extend({
 
     getUsersPaginationView: function () {
         return new UsersPaginationView({ model: this.model });
+    },
+
+    showAlert: function (options) {
+        var alertsRegion = this.getRegion("alerts"),
+            alertView = this.getAlertView(options);
+
+        alertsRegion.show(alertView);
+
+        setTimeout(this.hideAlert.bind(this), 2000, alertsRegion, alertView);
+    },
+
+    hideAlert: function (alertsRegion, alertView) {
+        alertView.$el.slideUp("slow", function () {
+            alertsRegion.empty();
+        });
     },
 
     createUser: function () {
