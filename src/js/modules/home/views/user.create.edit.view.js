@@ -26,7 +26,6 @@ module.exports = Marionette.View.extend({
 
     initialize: function () {
         this.channel = Radio.channel("global");
-        this.model = this.getOption("model");
         this.isCreate = this.getOption("isCreate") !== false;
     },
 
@@ -66,7 +65,6 @@ module.exports = Marionette.View.extend({
     },
 
     onBeforeDestroy: function () {
-        delete this.model;
         delete this.channel;
     }
 });
