@@ -26,6 +26,7 @@ module.exports = Marionette.View.extend({
 
     initialize: function () {
         this.channel = Radio.channel("global");
+        this.model = this.getOption("model");
         this.isCreate = this.getOption("isCreate") !== false;
     },
 
@@ -37,11 +38,35 @@ module.exports = Marionette.View.extend({
         if (this.isCreate) {
             this.channel.trigger("user:create", formData);
         } else {
-            this.channel.trigger("user:edit", formData, this.getOption("model"));
+            this.channel.trigger("user:edit", formData, this.model);
+        }
+    },
+
+    _populateForm: function (form, model) {
+        var formInputs,
+            input,
+            inputName,
+            attributes = model.attributes;
+
+        formInputs = form.find("input");
+
+        formInputs.each(function (key, input) {
+            inputName = input.name;
+
+            if (attributes.hasOwnProperty(inputName)) {
+                input.value = attributes[inputName];
+            }
+        });
+    },
+
+    onRender: function () {
+        if (!this.isCreate) {
+            this._populateForm(this.$el.children("form"), this.model);
         }
     },
 
     onBeforeDestroy: function () {
+        delete this.model;
         delete this.channel;
     }
 });
