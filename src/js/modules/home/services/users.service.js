@@ -18,17 +18,16 @@ module.exports = Marionette.Object.extend({
     initialize: function () {
         // Backbone Collection for internal service usage only
         this.users = new Backbone.Collection([
-            { id: 1, name: "John Snow", email: "john@snow.com" },
-            { id: 2, name: "Edward Nożycoręki", email: "edi@noz.com" },
-            { id: 3, name: "Mr Anderson", email: "mr@anderson.com" },
-            { id: 4, name: "Mr Anderson2", email: "mr2@anderson.com" },
-            { id: 5, name: "Mr Anderson3", email: "mr3@anderson.com" },
-            { id: 6, name: "Mr Anderson4", email: "mr4@anderson.com" },
-            { id: 7, name: "Mr Anderson5", email: "mr5@anderson.com" },
-            { id: 8, name: "Mr Anderson6", email: "mr6@anderson.com" },
-            { id: 9, name: "Mr Anderson7", email: "mr7@anderson.com" },
-            { id: 10, name: "Mr Anderson8", email: "mr8@anderson.com" },
-            { id: 11, name: "Mr Anderson9", email: "mr9@anderson.com" }
+            { id: 1, name: "Bruce Wayne", email: "bruce@wayne.com" },
+            { id: 2, name: "Tony Stark", email: "tony@stark.com" },
+            { id: 3, name: "Edward Nożycoręki", email: "edi@noz.com" },
+            { id: 4, name: "Mr Anderson", email: "mr@anderson.com" },
+            { id: 5, name: "Mr Anderson2", email: "mr@anderson2.com" },
+            { id: 6, name: "Mr Anderson3", email: "mr@anderson3.com" },
+            { id: 7, name: "Mr Anderson4", email: "mr@anderson4.com" },
+            { id: 8, name: "Mr Anderson5", email: "mr@anderson5.com" },
+            { id: 9, name: "Mr Anderson6", email: "mr@anderson6.com" },
+            { id: 10, name: "Mr Anderson7", email: "mr@anderson7.com" }
         ]);
 
         this.counter = this.users.length;
