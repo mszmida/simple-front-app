@@ -24,15 +24,39 @@ module.exports = Marionette.View.extend({
         "click @ui.userSubmit": "userSubmit"
     },
 
+    behaviors: {
+        InputValidator: {
+           fields: {
+                name: {
+                    el: "#userName",
+                    validators: {
+                        required: "User name cannot be empty."
+                    }
+                },
+                email: {
+                    el: "#userEmail",
+                    validators: {
+                        required: "Email address cannot be empty.",
+                        email: "Please enter a valid email address."
+                    }
+                }
+            }
+        }
+    },
+
     initialize: function () {
         this.channel = Radio.channel("global");
         this.isCreate = this.getOption("isCreate") !== false;
     },
 
     userSubmit: function (event) {
-        var formData = this.$el.children("form").serializeArray();
-
         event.preventDefault();
+
+        this.triggerMethod("validation:run");
+    },
+
+    onValidationSuccess: function () {
+        var formData = this.$el.children("form").serializeArray();
 
         if (this.isCreate) {
             this.channel.trigger("user:create", formData);

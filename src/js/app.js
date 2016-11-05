@@ -2,6 +2,7 @@
 
 const Backbone = require("backbone"),
     Marionette = require("backbone.marionette"),
+    InputValidator = require("common/validators/input.validator.js"),
     Layout = require("layouts/layout.js"),
     Modal = require("common/modal/modal.js"),
     HomeModule = require("modules/home/home.module.js");
@@ -14,6 +15,11 @@ module.exports = Marionette.Application.extend({
 
     initialize: function(options) {
         this.channel = this.getChannel();
+
+        // behaviors storage
+        Marionette.Behaviors.behaviorsLookup = {
+            "InputValidator": InputValidator
+        };
 
         console.log("App initialized");
     },
