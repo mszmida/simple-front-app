@@ -10,20 +10,6 @@ module.exports = Marionette.View.extend({
 
     template: UserAddEditTemplate,
 
-    templateContext: function() {
-        return {
-            isCreate: this.isCreate
-        }
-    },
-
-    ui: {
-        userSubmit: ".js-user-submit"
-    },
-
-    events: {
-        "click @ui.userSubmit": "userSubmit"
-    },
-
     behaviors: {
         InputValidator: {
            fields: {
@@ -49,9 +35,7 @@ module.exports = Marionette.View.extend({
         this.isCreate = this.getOption("isCreate") !== false;
     },
 
-    userSubmit: function (event) {
-        event.preventDefault();
-
+    onModalSubmit: function () {
         this.triggerMethod("validation:run");
     },
 

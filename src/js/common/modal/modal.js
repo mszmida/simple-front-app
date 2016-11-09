@@ -23,11 +23,11 @@ module.exports = Marionette.Object.extend({
     },
 
     showModal: function (options) {
+        this.modalRegion.$el.show();
         this.modalRegion.show(this.getModalView(options));
         // body
         this.modalLayoutView.$el.addClass("modal-open");
 
-        this.modalRegion.$el.show();
         this.modalRegion.$el.after("<div class=\"modal-backdrop in\"></div>");
     },
 
@@ -36,11 +36,11 @@ module.exports = Marionette.Object.extend({
             throw new Error("Argument is not a funcion!");
         };
 
+        this.modalRegion.$el.hide();
         this.modalRegion.empty();
         // body
         this.modalLayoutView.$el.removeClass("modal-open");
 
-        this.modalRegion.$el.hide();
         this.modalRegion.$el.next(".modal-backdrop").remove();
 
         if (done) {
@@ -49,6 +49,10 @@ module.exports = Marionette.Object.extend({
     },
 
     onBeforeDestroy: function () {
+        this.modalRegion.empty();
+        delete this.modalRegion;
+
         this.modalLayoutView.destroy();
+        delete this.modalLayoutView;
     }
 });

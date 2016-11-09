@@ -116,17 +116,18 @@ module.exports = Marionette.CollectionView.extend({
     editUser: function (child) {
         this.channel.trigger("modal:show", {
             title: "Edit user",
-            body: this.getUserCreateEditView({ isCreate: false, model: child.model })
+            body: this.getUserCreateEditView({ isCreate: false, model: child.model }),
+            submitButtonText: "Edit"
         });
     },
 
     removeUser: function (child) {
-        var model = child.model,
-            collection = this.getOption("collection");
+        var model = child.model;
 
         this.channel.trigger("modal:show", {
             title: "Remove user - confirmation",
-            body: this.getUserRemoveConfirmView({ model: child.model, collection: collection })
+            body: this.getUserRemoveConfirmView({ model: child.model }),
+            submitButtonText: "Remove"
         });
     },
 

@@ -10,20 +10,12 @@ module.exports = Marionette.View.extend({
 
     template: UserRemoveConfirmationTemplate,
 
-    ui: {
-        userRemoveOk: ".js-user-remove-ok"
-    },
-
-    events: {
-        "click @ui.userRemoveOk": "userRemoveOk"
-    },
-
     initialize: function () {
         this.channel = Radio.channel("global");
     },
 
-    userRemoveOk: function (event) {
-        this.channel.trigger("user:remove", this.getOption("model"), this.getOption("collection"));
+    onModalSubmit: function (event) {
+        this.channel.trigger("user:remove", this.model, this.collection);
     },
 
     onBeforeDestroy: function () {

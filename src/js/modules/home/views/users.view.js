@@ -60,12 +60,12 @@ module.exports = Marionette.View.extend({
         return new UserCreateEditView();
     },
 
-    getUsersTableView: function () {
-        return new UsersTableView({ model: this.model, collection: this.collection });
+    getUsersTableView: function (options) {
+        return new UsersTableView(options);
     },
 
-    getUsersPaginationView: function () {
-        return new UsersPaginationView({ model: this.model });
+    getUsersPaginationView: function (options) {
+        return new UsersPaginationView(options);
     },
 
     showAlert: function (options) {
@@ -86,7 +86,8 @@ module.exports = Marionette.View.extend({
     createUser: function () {
         this.channel.trigger("modal:show", {
             title: "Create user",
-            body: this.getUserCreateEditView()
+            body: this.getUserCreateEditView(),
+            submitButtonText: "Create"
         });
     },
 
@@ -95,10 +96,10 @@ module.exports = Marionette.View.extend({
     },
 
     onRender: function () {
-        this.showChildView("table", this.getUsersTableView());
+        this.showChildView("table", this.getUsersTableView({ model: this.model, collection: this.collection }));
 
         if (this.model.get("pages") > 1) {
-            this.showChildView("panelFooter", this.getUsersPaginationView());
+            this.showChildView("panelFooter", this.getUsersPaginationView({ model: this.model }));
         }
     },
 
