@@ -26,6 +26,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "jest": "^19.0.0",
     "jquery": "^3.1.0",
     "jstify": "^0.14.0",
     "koa": "^1.2.2",
@@ -42,6 +43,14 @@
   },
   "scripts": {
     "start": "set DEBUG=server,-not_this && node server/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "other": "echo \"Error: no test specified\" && exit 1"
+  },
+  "jest": {
+    "modulePaths": ["<rootDir>/src/js"],
+    "transform": {
+      "^.+\\.ejs$": "<rootDir>/ejs-transformer.js"
+    },
+    "verbose": true
   }
 }
